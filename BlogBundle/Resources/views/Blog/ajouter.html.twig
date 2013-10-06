@@ -1,0 +1,16 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/ajouter.html.twig #}
+ 
+{% extends "SdzBlogBundle::layout.html.twig" %}
+ 
+{% block body %}
+ 
+  <h2>Ajouter un article</h2>
+ 
+  {% include "SdzBlogBundle:Blog:formulaire.html.twig" %}
+ 
+  <p>
+     Attention : cet article sera ajouté directement
+     sur la page d'accueil après validation du formulaire.
+  </p>
+ 
+{% endblock %}

@@ -1,0 +1,42 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/voir.html.twig #}
+ 
+{% extends "SdzBlogBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Lecture d'un article - {{ parent() }}
+{% endblock %}
+ 
+{% block sdzblog_body %}
+  {% if article.image is not null %}
+    <img src="{{ article.image.url }}" alt="{{ article.image.alt }}" />
+  {% endif %}
+ 
+  <h2>{{ article.titre }}</h2>
+  <i>Par {{ article.auteur }}, le {{ article.date|date('d/m/Y') }}</i>
+ 
+  <div class="well">
+    {{ article.contenu }}
+  </div>
+  
+  <ul>
+  		  {% for commentaire in liste_commentaires %}
+            <li>{{ commentaire.auteur }}  ------ {{commentaire.contenu}}</li>
+          {% endfor %}
+  </ul>
+ 
+  <p>
+    <a href="{{ path('sdzblog_accueil') }}" class="btn">
+      <i class="icon-chevron-left"></i>
+      Retour à la liste
+    </a>
+    <a href="{{ path('sdzblog_modifier', {'id': article.id}) }}" class="btn">
+      <i class="icon-edit"></i>
+      Modifier l'article
+    </a>
+    <a href="{{ path('sdzblog_supprimer', {'id': article.id}) }}" class="btn">
+      <i class="icon-trash"></i>
+      Supprimer l'article
+    </a>
+  </p>
+ 
+{% endblock %}
