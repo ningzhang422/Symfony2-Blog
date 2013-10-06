@@ -9,6 +9,7 @@ use Symfony\Component\Httpfoundation\Response;
 use Sdz\BlogBundle\Entity\Article;
 use Sdz\BlogBundle\Entity\Image;
 use Sdz\BlogBundle\Entity\Commentaire;
+use Sdz\BlogBundle\Entity\ArticleCompetence;
 class BlogController extends Controller
 {
   public function indexAction($page)
@@ -62,7 +63,7 @@ class BlogController extends Controller
    
   public function voirAction($id)
   {
-     // On récupère l'EntityManager
+    // On récupère l'EntityManager
     $em = $this->getDoctrine()
                ->getManager();
  
@@ -70,55 +71,62 @@ class BlogController extends Controller
     $article = $em->getRepository('SdzBlogBundle:Article')
                   ->find($id);
  
-    if($article === null)
-    {
+    if ($article === null) {
       throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
     }
  
-    // On récupère la liste des commentaires
-    $liste_commentaires = $em->getRepository('SdzBlogBundle:Commentaire')
-                             ->findAll();
+    // On récupère les articleCompetence pour l'article $article
+    $liste_articleCompetence = $em->getRepository('SdzBlogBundle:ArticleCompetence')
+                            ->findByArticle($article->getId());
  
-    // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
+    // Puis modifiez la ligne du render comme ceci, pour prendre en compte les articleCompetence :
     return $this->render('SdzBlogBundle:Blog:voir.html.twig', array(
-      'article'        => $article,
-      'liste_commentaires' => $liste_commentaires
+      'article'          => $article,
+      'liste_articleCompetence'  => $liste_articleCompetence,
+      // … et évidemment les autres variables que vous pouvez avoir
     ));
   }
    
   public function ajouterAction()
   {
+    // On récupére l'EntityManager
+    $em = $this->getDoctrine()
+               ->getManager();
+ 
     // Création de l'entité Article
     $article = new Article();
     $article->setTitre('Mon dernier weekend');
     $article->setContenu("C'était vraiment super et on s'est bien amusé.");
     $article->setAuteur('winzou');
  
-    // Création d'un premier commentaire
-    $commentaire1 = new Commentaire();
-    $commentaire1->setAuteur('winzou');
-    $commentaire1->setContenu('On veut les photos !');
- 
-    // Création d'un deuxième commentaire, par exemple
-    $commentaire2 = new Commentaire();
-    $commentaire2->setAuteur('Choupy');
-    $commentaire2->setContenu('Les photos arrivent !');
- 
-    // On lie les commentaires à l'article
-    $commentaire1->setArticle($article);
-    $commentaire2->setArticle($article);
- 
-    // On récupère l'EntityManager
-    $em = $this->getDoctrine()->getManager();
- 
-    // Étape 1 : On persiste les entités
+    // Dans ce cas, on doit créer effectivement l'article en bdd pour lui assigner un id
+    // On doit faire cela pour pouvoir enregistrer les ArticleCompetence par la suite
     $em->persist($article);
-    // Pour cette relation pas de cascade, car elle est définie dans l'entité Commentaire et non Article
-    // On doit donc tout persister à la main ici
-    $em->persist($commentaire1);
-    $em->persist($commentaire2);
+    $em->flush(); // Maintenant, $article a un id défini
  
-    // Étape 2 : On déclenche l'enregistrement
+    // Les compétences existent déjà, on les récupère depuis la bdd
+    $liste_competences = $em->getRepository('SdzBlogBundle:Competence')
+                            ->findAll(); // Pour l'exemple, notre Article contient toutes les Competences
+ 
+    // Pour chaque compétence
+    foreach($liste_competences as $i => $competence)
+    {
+      // On crée une nouvelle « relation entre 1 article et 1 compétence »
+      $articleCompetence[$i] = new ArticleCompetence;
+ 
+      // On la lie à l'article, qui est ici toujours le même
+      $articleCompetence[$i]->setArticle($article);
+      // On la lie à la compétence, qui change ici dans la boucle foreach
+      $articleCompetence[$i]->setCompetence($competence);
+ 
+      // Arbitrairement, on dit que chaque compétence est requise au niveau 'Expert'
+      $articleCompetence[$i]->setNiveau('Expert');
+ 
+      // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
+      $em->persist($articleCompetence[$i]);
+    }
+ 
+    // On déclenche l'enregistrement
     $em->flush();
      
     // Reste de la méthode qu'on avait déjà écrit
@@ -132,31 +140,77 @@ class BlogController extends Controller
    
   public function modifierAction($id)
   {
-    // Ici, on récupérera l'article correspondant à $id
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()
+               ->getManager();
  
-    // Ici, on s'occupera de la création et de la gestion du formulaire
+    // On récupère l'entité correspondant à l'id $id
+    $article = $em->getRepository('SdzBlogBundle:Article')
+                  ->find($id);
  
-    $article = array(
-      'id'      => 1,
-      'titre'   => 'Mon weekend a Phi Phi Island !',
-      'auteur'  => 'winzou',
-      'contenu' => 'Ce weekend était trop bien. Blabla…',
-      'date'    => new \Datetime()
-    );
+    if ($article === null) {
+      throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
+    }
+ 
+    // On récupère toutes les catégories :
+    $liste_categories = $em->getRepository('SdzBlogBundle:Categorie')
+                           ->findAll();
+ 
+    // On boucle sur les catégories pour les lier à l'article
+    foreach($liste_categories as $categorie)
+    {
+      $article->addCategorie($categorie);
+    }
+ 
+    // Inutile de persister l'article, on l'a récupéré avec Doctrine
+ 
+    // Étape 2 : On déclenche l'enregistrement
+    $em->flush();
+ 
+    return new Response('OK');
          
     // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
-    return $this->render('SdzBlogBundle:Blog:modifier.html.twig', array(
-      'article' => $article
-    ));
+    //return $this->render('SdzBlogBundle:Blog:modifier.html.twig', array(
+      //'article' => $article
+    //));
   }
  
   public function supprimerAction($id)
   {
-    // Ici, on récupérera l'article correspondant à $id
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()
+               ->getManager();
  
-    // Ici, on gérera la suppression de l'article en question
+    // On récupère l'entité correspondant à l'id $id
+    $article = $em->getRepository('SdzBlogBundle:Article')
+                  ->find($id);
  
-    return $this->render('SdzBlogBundle:Blog:supprimer.html.twig');
+    if ($article === null) {
+      throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
+    }
+     
+    // On récupère toutes les catégories :
+    $liste_categories = $em->getRepository('SdzBlogBundle:Categorie')
+                           ->findAll();
+     
+    // On enlève toutes ces catégories de l'article
+    foreach($liste_categories as $categorie)
+    {
+      // On fait appel à la méthode removeCategorie() dont on a parlé plus haut
+      // Attention ici, $categorie est bien une instance de Categorie, et pas seulement un id
+      $article->removeCategorie($categorie);
+    }
+ 
+    // On n'a pas modifié les catégories : inutile de les persister
+     
+    // On a modifié la relation Article - Categorie
+    // Il faudrait persister l'entité propriétaire pour persister la relation
+    // Or l'article a été récupéré depuis Doctrine, inutile de le persister
+   
+    // On déclenche la modification
+    $em->flush();
+ 
+    return new Response('OK');
   }
   public function menuAction()
   {

@@ -13,6 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
 	/**
+	* @ORM\OneToMany(targetEntity="Sdz\BlogBundle\Entity\Commentaire", mappedBy="article")
+	*/
+	private $commentaires;
+	
+	
+	/**
 	* @ORM\Column(name="publication", type="boolean")
 	*/
 	private $publication;
@@ -22,11 +28,18 @@ class Article
    */
   	private $image;
 	
+	/**
+   * @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie", cascade={"persist"})
+   */
+    private $categories;
+	
 	// Et modifions le constructeur pour mettre cet attribut publication à true par défaut
 	public function __construct()
 	{
 		$this->date = new \Datetime();
 		$this->publication = true;
+		
+    	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 	
     /**
@@ -190,5 +203,61 @@ class Article
     public function getPublication()
     {
         return $this->publication;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \Sdz\BlogBundle\Entity\Image $image
+     * @return Article
+     */
+    public function setImage(\Sdz\BlogBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+    
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \Sdz\BlogBundle\Entity\Image 
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     * @return Article
+     */
+    public function addCategorie(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+    
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategorie(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

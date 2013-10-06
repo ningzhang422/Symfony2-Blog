@@ -43,7 +43,7 @@ class Commentaire
     private $date;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Sdz\BlogBundle\Entity\Article")
+	 * @ORM\ManyToOne(targetEntity="Sdz\BlogBundle\Entity\Article", inversedBy="commentaires")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $article;

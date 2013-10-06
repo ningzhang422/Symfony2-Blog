@@ -1,0 +1,57 @@
+<?php
+
+namespace Sdz\BlogBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ArticleCompetence
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\ArticleCompetenceRepository")
+ */
+class ArticleCompetence
+{
+    /**
+    * @ORM\Id
+    * @ORM\ManyToOne(targetEntity="Sdz\BlogBundle\Entity\Article")
+    */
+   private $article;
+ 
+   /**
+    * @ORM\Id
+    * @ORM\ManyToOne(targetEntity="Sdz\BlogBundle\Entity\Competence")
+    */
+   private $competence;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="niveau", type="integer")
+     */
+    private $niveau;
+
+
+    /**
+     * Set niveau
+     *
+     * @param integer $niveau
+     * @return ArticleCompetence
+     */
+    public function setNiveau($niveau)
+    {
+        $this->niveau = $niveau;
+
+        return $this;
+    }
+
+    /**
+     * Get niveau
+     *
+     * @return integer 
+     */
+    public function getNiveau()
+    {
+        return $this->niveau;
+    }
+}

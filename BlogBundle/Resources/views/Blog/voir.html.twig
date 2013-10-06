@@ -18,11 +18,26 @@
     {{ article.contenu }}
   </div>
   
-  <ul>
-  		  {% for commentaire in liste_commentaires %}
-            <li>{{ commentaire.auteur }}  ------ {{commentaire.contenu}}</li>
-          {% endfor %}
-  </ul>
+  {% if article.categories.count > 0 %}
+    - Catégories :
+    {% for categorie in article.categories %}
+      {{ categorie.nom }}
+      {% if not loop.last %} - {% endif %}
+    {% endfor %}
+  {% endif %}
+  
+
+ 
+  {% if liste_articleCompetence|length > 0 %}
+    <div>
+      Compétences utilisées dans cet article :
+      <ul>
+        {% for articleCompetence in liste_articleCompetence %}
+          <li>{{ articleCompetence.competence.nom }} : {{ articleCompetence.niveau }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
  
   <p>
     <a href="{{ path('sdzblog_accueil') }}" class="btn">

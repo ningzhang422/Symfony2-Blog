@@ -13,6 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
 	/**
+	* @ORM\OneToMany(targetEntity="Sdz\BlogBundle\Entity\Commentaire", mappedBy="article")
+	*/
+	private $commentaires;
+	
+	
+	/**
 	* @ORM\Column(name="publication", type="boolean")
 	*/
 	private $publication;
@@ -22,11 +28,19 @@ class Article
    */
   	private $image;
 	
+	/**
+   * @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie", cascade={"persist"})
+   */
+    private $categories;
+	
 	// Et modifions le constructeur pour mettre cet attribut publication à true par défaut
 	public function __construct()
 	{
 		$this->date = new \Datetime();
 		$this->publication = true;
+		
+    	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 	
     /**
@@ -213,5 +227,95 @@ class Article
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     * @return Article
+     */
+    public function addCategorie(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+    
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategorie(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * Add commentaires
+     *
+     * @param \Sdz\BlogBundle\Entity\Commentaire $commentaires
+     * @return Article
+     */
+    public function addCommentaire(\Sdz\BlogBundle\Entity\Commentaire $commentaires)
+    {
+        $this->commentaires[] = $commentaires;
+		$commentaires->setArticle($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove commentaires
+     *
+     * @param \Sdz\BlogBundle\Entity\Commentaire $commentaires
+     */
+    public function removeCommentaire(\Sdz\BlogBundle\Entity\Commentaire $commentaires)
+    {
+        $this->commentaires->removeElement($commentaires);
+    }
+
+    /**
+     * Get commentaires
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCommentaires()
+    {
+        return $this->commentaires;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     * @return Article
+     */
+    public function addCategory(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategory(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
     }
 }
