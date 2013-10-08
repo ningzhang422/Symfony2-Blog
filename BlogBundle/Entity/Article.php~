@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\ArticleRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Article
 {
@@ -37,10 +38,13 @@ class Article
 	public function __construct()
 	{
 		$this->date = new \Datetime();
+		$this->dateEdition = new \Datetime();
 		$this->publication = true;
 		
     	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
 	}
+	
 	
     /**
      * @var integer
@@ -78,6 +82,20 @@ class Article
      * @ORM\Column(name="contenu", type="text")
      */
     private $contenu;
+	
+	/**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateEdition", type="datetime")
+     */
+    private $dateEdition;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="compteurCommentaire", type="integer")
+     */
+    private $compteurCommentaire;
 
 
     /**
@@ -259,5 +277,92 @@ class Article
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Add commentaires
+     *
+     * @param \Sdz\BlogBundle\Entity\Commentaire $commentaires
+     * @return Article
+     */
+    public function addCommentaire(\Sdz\BlogBundle\Entity\Commentaire $commentaires)
+    {
+        $this->commentaires[] = $commentaires;
+		$commentaires->setArticle($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove commentaires
+     *
+     * @param \Sdz\BlogBundle\Entity\Commentaire $commentaires
+     */
+    public function removeCommentaire(\Sdz\BlogBundle\Entity\Commentaire $commentaires)
+    {
+        $this->commentaires->removeElement($commentaires);
+    }
+
+    /**
+     * Get commentaires
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCommentaires()
+    {
+        return $this->commentaires;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     * @return Article
+     */
+    public function addCategory(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Sdz\BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategory(\Sdz\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Set dateEdition
+     *
+     * @param \DateTime $dateEdition
+     * @return Article
+     */
+    public function setDateEdition($dateEdition)
+    {
+        $this->dateEdition = $dateEdition;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEdition
+     *
+     * @return \DateTime 
+     */
+    public function getDateEdition()
+    {
+        return $this->dateEdition;
+    }
+	/**
+	 * @ORM\PreUpdate
+	 */
+	public function updateDate()
+    {
+    	$this->setDateEdition(new \Datetime());
     }
 }

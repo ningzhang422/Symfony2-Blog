@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\CommentaireRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Commentaire
 {
@@ -150,4 +151,22 @@ class Commentaire
     {
         return $this->article;
     }
+	
+	/**
+	 * @ORM\PrePersist
+	 */
+	public function updateActicle_compteurCommentaire()
+    {
+    	$nbCommentaires = $this->getArticle()->getNbCommentaires();
+		$this->getArticle()->setNbCommentaires($nbCommentaires+1);
+    }
+	
+	/**
+   * @ORM\preRemove
+   */
+  public function decrease()
+  {
+    $nbCommentaires = $this->getArticle()->getNbCommentaires();
+    $this->getArticle()->setNbCommentaires($nbCommentaires-1);
+  }
 }

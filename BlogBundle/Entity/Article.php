@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\ArticleRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Article
 {
@@ -37,11 +38,13 @@ class Article
 	public function __construct()
 	{
 		$this->date = new \Datetime();
+		$this->dateEdition = new \Datetime();
 		$this->publication = true;
 		
     	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
 	}
+	
 	
     /**
      * @var integer
@@ -79,6 +82,20 @@ class Article
      * @ORM\Column(name="contenu", type="text")
      */
     private $contenu;
+	
+	/**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateEdition", type="datetime")
+     */
+    private $dateEdition;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="compteurCommentaire", type="integer")
+     */
+    private $compteurCommentaire;
 
 
     /**
@@ -317,5 +334,60 @@ class Article
     public function removeCategory(\Sdz\BlogBundle\Entity\Categorie $categories)
     {
         $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Set dateEdition
+     *
+     * @param \DateTime $dateEdition
+     * @return Article
+     */
+    public function setDateEdition($dateEdition)
+    {
+        $this->dateEdition = $dateEdition;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEdition
+     *
+     * @return \DateTime 
+     */
+    public function getDateEdition()
+    {
+        return $this->dateEdition;
+    }
+	
+
+    /**
+     * Set compteurCommentaire
+     *
+     * @param integer $compteurCommentaire
+     * @return Article
+     */
+    public function setCompteurCommentaire($compteurCommentaire)
+    {
+        $this->compteurCommentaire = $compteurCommentaire;
+
+        return $this;
+    }
+
+    /**
+     * Get compteurCommentaire
+     *
+     * @return integer 
+     */
+    public function getCompteurCommentaire()
+    {
+        return $this->compteurCommentaire;
+    }
+	
+	/**
+	 * @ORM\PreUpdate
+	 */
+	public function updateDate()
+    {
+    	$this->setDateEdition(new \Datetime());
     }
 }
