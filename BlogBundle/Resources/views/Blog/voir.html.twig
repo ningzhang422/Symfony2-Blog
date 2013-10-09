@@ -7,37 +7,9 @@
 {% endblock %}
  
 {% block sdzblog_body %}
-  {% if article.image is not null %}
-    <img src="{{ article.image.url }}" alt="{{ article.image.alt }}" />
-  {% endif %}
  
-  <h2>{{ article.titre }}</h2>
-  <i>Par {{ article.auteur }}, le {{ article.date|date('d/m/Y') }}</i>
- 
-  <div class="well">
-    {{ article.contenu }}
-  </div>
-  
-  {% if article.categories.count > 0 %}
-    - Catégories :
-    {% for categorie in article.categories %}
-      {{ categorie.nom }}
-      {% if not loop.last %} - {% endif %}
-    {% endfor %}
-  {% endif %}
-  
-
- 
-  {% if liste_articleCompetence|length > 0 %}
-    <div>
-      Compétences utilisées dans cet article :
-      <ul>
-        {% for articleCompetence in liste_articleCompetence %}
-          <li>{{ articleCompetence.competence.nom }} : {{ articleCompetence.niveau }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
+  {# Ici, on inclut la vue #}
+  {% include "SdzBlogBundle:Blog:article.html.twig" %}
  
   <p>
     <a href="{{ path('sdzblog_accueil') }}" class="btn">

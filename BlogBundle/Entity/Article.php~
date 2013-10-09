@@ -3,6 +3,7 @@
 namespace Sdz\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Article
@@ -28,6 +29,11 @@ class Article
    * @ORM\OneToOne(targetEntity="Sdz\BlogBundle\Entity\Image", cascade={"persist"})
    */
   	private $image;
+	/**
+   * @Gedmo\Slug(fields={"titre"})
+   * @ORM\Column(length=128, unique=true)
+   */
+  	private $slug;
 	
 	/**
    * @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie", cascade={"persist"})
@@ -40,6 +46,7 @@ class Article
 		$this->date = new \Datetime();
 		$this->dateEdition = new \Datetime();
 		$this->publication = true;
+		$this->compteurCommentaire = 0;
 		
     	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
@@ -358,6 +365,31 @@ class Article
     {
         return $this->dateEdition;
     }
+	
+
+    /**
+     * Set compteurCommentaire
+     *
+     * @param integer $compteurCommentaire
+     * @return Article
+     */
+    public function setCompteurCommentaire($compteurCommentaire)
+    {
+        $this->compteurCommentaire = $compteurCommentaire;
+
+        return $this;
+    }
+
+    /**
+     * Get compteurCommentaire
+     *
+     * @return integer 
+     */
+    public function getCompteurCommentaire()
+    {
+        return $this->compteurCommentaire;
+    }
+	
 	/**
 	 * @ORM\PreUpdate
 	 */

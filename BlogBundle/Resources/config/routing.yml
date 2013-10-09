@@ -7,8 +7,6 @@ sdzblog_accueil:
 sdzblog_voir:
     pattern:   /article/{id}
     defaults:  { _controller: SdzBlogBundle:Blog:voir }
-    requirements:
-        id:  \d+
  
 sdzblog_ajouter:
     pattern:   /ajouter
