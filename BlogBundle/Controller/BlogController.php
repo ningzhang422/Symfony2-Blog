@@ -11,6 +11,10 @@ use Sdz\BlogBundle\Entity\Article;
 use Sdz\BlogBundle\Entity\Image;
 use Sdz\BlogBundle\Entity\Commentaire;
 use Sdz\BlogBundle\Entity\ArticleCompetence;
+
+// N'oubliez pas d'ajouter le ArticleType
+use Sdz\BlogBundle\Form\ArticleType;
+
 class BlogController extends Controller
 {
   public function indexAction($page)
@@ -64,19 +68,42 @@ class BlogController extends Controller
  
   public function ajouterAction()
   {
-    // La gestion d'un formulaire est particulière, mais l'idée est la suivante :
+    
    
-    if ($this->get('request')->getMethod() == 'POST') {
-      // Ici, on s'occupera de la création et de la gestion du formulaire
-   
-      $this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
-   
-      // Puis on redirige vers la page de visualisation de cet article
-      return $this->redirect( $this->generateUrl('sdzblog_voir', array('id' => 1)) );
-    }
-   
-    // Si on n'est pas en POST, alors on affiche le formulaire
-    return $this->render('SdzBlogBundle:Blog:ajouter.html.twig');
+    // On crée un objet Article
+	  $article = new Article();
+	  $form = $this->createForm(new ArticleType, $article);
+	  
+	  // On récupère la requête
+		$request = $this->get('request');
+	   
+		if ($request->getMethod() == 'POST') {
+		  // On fait le lien Requête <-> Formulaire
+		  // À partir de maintenant, la variable $article contient les valeurs entrées dans le formulaire par le visiteur
+		  $form->bind($request);
+	 
+		  // On vérifie que les valeurs entrées sont correctes
+		  // (Nous verrons la validation des objets en détail dans le prochain chapitre)
+		  if ($form->isValid()) {
+			// On l'enregistre notre objet $article dans la base de données
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($article);
+			$em->flush();
+	 
+			// Ici, on s'occupera de la création et de la gestion du formulaire
+	   
+			$this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
+			
+			// On redirige vers la page de visualisation de l'article nouvellement créé
+			return $this->redirect($this->generateUrl('sdzblog_voir', array('id' => $article->getId())));
+		  }
+		  
+		}
+	 
+	  // On passe la méthode createView() du formulaire à la vue afin qu'elle puisse afficher le formulaire toute seule
+	  return $this->render('SdzBlogBundle:Blog:ajouter.html.twig', array(
+		'form' => $form->createView(),
+	  ));
   }
  
   public function modifierAction($id)
