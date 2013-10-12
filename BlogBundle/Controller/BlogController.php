@@ -14,7 +14,7 @@ use Sdz\BlogBundle\Entity\ArticleCompetence;
 
 // N'oubliez pas d'ajouter le ArticleType
 use Sdz\BlogBundle\Form\ArticleType;
-
+use Sdz\BlogBundle\Form\ArticleEditType;
 class BlogController extends Controller
 {
   public function indexAction($page)
@@ -106,25 +106,41 @@ class BlogController extends Controller
 	  ));
   }
  
-  public function modifierAction($id)
+  public function modifierAction(Article $article)
   {
-    // On récupère l'EntityManager
-    $em = $this->getDoctrine()
-               ->getEntityManager();
- 
-    // On récupère l'entité correspondant à l'id $id
-    $article = $em->getRepository('SdzBlogBundle:Article')
-                  ->find($id);
- 
-    // Si l'article n'existe pas, on affiche une erreur 404
-    if ($article == null) {
-      throw $this->createNotFoundException('Article[id='.$id.'] inexistant');
-    }
+    $form = $this->createForm(new ArticleEditType, $article);
+	  
+	  // On récupère la requête
+		$request = $this->get('request');
+	   
+		if ($request->getMethod() == 'POST') {
+		  // On fait le lien Requête <-> Formulaire
+		  // À partir de maintenant, la variable $article contient les valeurs entrées dans le formulaire par le visiteur
+		  $form->bind($request);
+	 
+		  // On vérifie que les valeurs entrées sont correctes
+		  // (Nous verrons la validation des objets en détail dans le prochain chapitre)
+		  if ($form->isValid()) {
+			// On l'enregistre notre objet $article dans la base de données
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($article);
+			$em->flush();
+	 
+			// Ici, on s'occupera de la création et de la gestion du formulaire
+	   
+			$this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
+			
+			// On redirige vers la page de visualisation de l'article nouvellement créé
+			return $this->redirect($this->generateUrl('sdzblog_voir', array('id' => $article->getId())));
+		  }
+		  
+		}
  
     // Ici, on s'occupera de la création et de la gestion du formulaire
  
     return $this->render('SdzBlogBundle:Blog:modifier.html.twig', array(
-      'article' => $article
+      'article' => $article,
+	  'form' => $form->createView()
     ));
   }
  
