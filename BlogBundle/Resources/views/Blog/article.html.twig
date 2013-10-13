@@ -6,7 +6,10 @@
 <h2>
   {# On vérifie qu'une image est bien associée à l'article #}
   {% if article.image is not null %}
-    <img src="{{ asset(article.image.url) }}" alt="{{ article.image.alt }}" />
+    <img
+  src="{{ asset(article.image.webpath) }}"
+  alt="{{ article.image.alt }}"
+/>
   {% endif %}
  
   {# Si on est sur la page d'accueil, on fait un lien vers l'article, sinon non #}
