@@ -4,13 +4,20 @@ namespace Sdz\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+// use Sdz\BlogBundle\Entity\Tag;
+ 
+// On rajoute ce use pour le context :
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Article
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\ArticleRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @Assert\Callback(methods={"contenuValide"})
  */
 class Article
 {
@@ -27,6 +34,7 @@ class Article
 	
 	/**
    * @ORM\OneToOne(targetEntity="Sdz\BlogBundle\Entity\Image", cascade={"persist", "remove"})
+   * @Assert\Valid()
    */
   	private $image;
 	/**
@@ -66,6 +74,7 @@ class Article
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+	 * @Assert\DateTime()
      */
     private $date;
 
@@ -73,13 +82,15 @@ class Article
      * @var string
      *
      * @ORM\Column(name="titre", type="string", length=255)
+	 * @Assert\MinLength(10)
      */
     private $titre;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="auteur", type="string", length=255)
+     * @ORM\Column(name="auteur", type="string", length=255, unique=true)
+	 * @Assert\MinLength(2)
      */
     private $auteur;
 
@@ -87,6 +98,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="contenu", type="text")
+	 * @Assert\NotBlank()
      */
     private $contenu;
 	
@@ -420,4 +432,32 @@ class Article
     {
         return $this->slug;
     }
+	
+	/**
+	* @Assert\True()
+	*/
+	public function isArticleValid()
+	{
+	return false;
+	}
+	/**
+	* @Assert\True()
+	*/
+	public function isTitre()
+	{
+	return false;
+	}
+	
+	public function contenuValide(ExecutionContextInterface $context)
+	{
+	$mots_interdits = array('échec', 'abandon');
+		 
+	// On vérifie que le contenu ne contient pas l'un des mots
+	if (preg_match('#'.implode('|', $mots_interdits).'#', $this->getContenu())) {
+	  // La règle est violée, on définit l'erreur et son message
+	  // 1er argument : on dit quel attribut l'erreur concerne, ici « contenu »
+	  // 2e argument : le message d'erreur
+	  $context->addViolationAt('contenu', 'Contenu invalide car il contient un mot interdit.', array(), null);
+	}
+	}
 }
