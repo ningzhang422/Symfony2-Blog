@@ -89,7 +89,7 @@ class Article
     /**
      * @var string
      *
-     * @ORM\Column(name="auteur", type="string", length=255, unique=true)
+     * @ORM\Column(name="auteur", type="string", length=255)
 	 * @Assert\MinLength(2)
      */
     private $auteur;

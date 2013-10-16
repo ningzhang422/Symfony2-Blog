@@ -15,6 +15,10 @@ use Sdz\BlogBundle\Entity\ArticleCompetence;
 // N'oubliez pas d'ajouter le ArticleType
 use Sdz\BlogBundle\Form\ArticleType;
 use Sdz\BlogBundle\Form\ArticleEditType;
+
+use JMS\SecurityExtraBundle\Annotation\Secure;
+
+
 class BlogController extends Controller
 {
   public function indexAction($page)
@@ -66,10 +70,13 @@ class BlogController extends Controller
     ));
   }
  
+  /**
+   * @Secure(roles="ROLE_AUTEUR")
+   */
   public function ajouterAction()
   {
     
-   
+   	
     // On crée un objet Article
 	  $article = new Article();
 	  $form = $this->createForm(new ArticleType, $article);
