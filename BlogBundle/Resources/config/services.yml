@@ -2,17 +2,19 @@ parameters:
 #    sdz_blog.example.class: Sdz\BlogBundle\Example
 
 services:
-#    sdz_blog.example:
-#        class: %sdz_blog.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
-services:
     sdz_blog.antispam:
         class: Sdz\BlogBundle\Antispam\SdzAntispam
         arguments: [@mailer, %locale%, 3] # Tableau d'arguments
-services:
+        tags:
+            -  { name: twig.extension }
+
     sdzblog.validator.antiflood:                             # Le nom du service
         class: Sdz\BlogBundle\Validator\AntiFloodValidator   # La classe du service, ici notre validateur déjà créé
         arguments: [@request, @doctrine.orm.entity_manager]  # Les données qu'on injecte au service : la requête et l'EntityManager
         scope: request                                       # Comme on injecte la requête, on doit préciser ce scope
         tags:
             - { name: validator.constraint_validator, alias: sdzblog_antiflood }  # C'est avec l'alias qu'on retrouvera le service
+    sdz_blog.ckeditor:
+        class: Sdz\BlogBundle\Form\Type\CkeditorType
+        tags:
+            - { name: form.type, alias: ckeditor }
