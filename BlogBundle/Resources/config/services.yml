@@ -16,5 +16,9 @@ services:
             - { name: validator.constraint_validator, alias: sdzblog_antiflood }  # C'est avec l'alias qu'on retrouvera le service
     sdz_blog.ckeditor:
         class: Sdz\BlogBundle\Form\Type\CkeditorType
+        arguments: [@doctrine, 3]
+        calls:
+            - [ setLocale, [ %locale% ] ]
         tags:
             - { name: form.type, alias: ckeditor }
+        scope:     request

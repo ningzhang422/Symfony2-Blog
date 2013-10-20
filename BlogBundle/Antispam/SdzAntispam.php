@@ -12,10 +12,14 @@ class SdzAntispam extends \Twig_Extension
   public function __construct(\Swift_Mailer $mailer, $locale, $nbForSpam)
   {
     $this->mailer    = $mailer;
-    $this->locale    = $locale;
+    // $this->locale    = $locale;
     $this->nbForSpam = (int) $nbForSpam;
   }
-  
+  // Et on ajoute un setter
+  public function setLocale($locale)
+  {
+    $this->locale = $locale;
+  }
   /*
    * Twig va exécuter cette méthode pour savoir quelle(s) fonction(s) ajoute notre service
    */
