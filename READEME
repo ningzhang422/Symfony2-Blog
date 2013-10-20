@@ -1,1 +1,54 @@
-hello world
+Installing WAMP + APC + intl
+
+
+Here's a quick how-I-did-it in case others are running into problems getting a WAMP dev environment set up on a windows machine.
+
+- Go to http://www.wampserver.com/en/
+- Scroll down (or click 'download' on the menu bar) and click on the yellow "Wampserver (32 bits & PHP 5.3) 2.2E" banner
+- Click the yellowish "download it directly" text (links to sourceforge )
+- install wampserver...
+- when you fire it up you realise that intl doesn't work (at least in my experience) and there's no APC
+- left-click on the WAMP icon and stop all the services
+
+(Side note: In my Apache error log I was finding errors stating:
+"Unable to load dynamic library .../php_intl.dll"
+and
+"the specified module could not be found.")
+
+For APC:
+- Go to Pierre's handy DLL download page and grab the php_apc-3.1.10-5.3-vc9-x86.zip
+- copy the php_apc.dll file into C:\wamp\bin\php\php5.3.13\ext
+- open C:\wamp\bin\apache\apache2.2.22\bin\php.ini and add an entry for "extension=php_apc.dll" next to the other extensions
+- at the end of the php.ini file add something like this:
+[APC]
+apc.enabled = 1
+apc.shm_segments = 1
+apc.shm_size = 128M
+apc.max_file_size = 5M
+apc.stat = 1
+- save your changes and restart apache
+- if you open a phpinfo() page then you should see APC enabled (and you should see your pages loading faster)
+
+Now to deal with that pesky intl...
+- Click on the wamp icon and stop all services
+- Go to the pecl intl page and download the version of intl that you wish to use: http://pecl.php.net/package/intl (you want the 5.3 ZTS version)
+- Also take note of the sentence under the dll download links: "The binaries depend on the ICU libraries..." and download the correct zip for the intl version you went for
+(e.g. get v2.0.1 of intl by choosing the PHP 5.3, ZTS option and then get the related icuXX v49 dlls)
+- unzip the php_intl.dll into C:\wamp\bin\php\php5.3.13\ext
+- unzip the icu dlls (all 7 of them) into C:\wamp\bin\apache\apache2.2.22\bin
+- edit php.ini (or click the WAMP menu) to enable php_intl
+- restart all services
+- if you open a phpinfo() page then you should see APC enabled (and you should see your pages loading faster)
+
+...and, most importantly, if you open a config.php page in a new Symfony 2 project you should see a nice green
+
+Your configuration looks good to run Symfony.
+
+And that's what it's all about at the end of the day!
+
+Now go faster:
+One more thing... to speed up the execution time of Symfony scripts that read in a lot of files:
+- open C:\wamp\bin\apache\apache2.2.22\bin\php.ini and set realpath_cache_size =512k
+- restart apache
+
+In my experience this single change makes pages load about 25-30% faster.
