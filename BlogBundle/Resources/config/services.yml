@@ -22,3 +22,8 @@ services:
         tags:
             - { name: form.type, alias: ckeditor }
         scope:     request
+    sdzblog.beta_listener:
+        class: Sdz\BlogBundle\Beta\BetaListener
+        arguments: ["2013-10-29"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
