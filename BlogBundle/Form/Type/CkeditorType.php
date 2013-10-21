@@ -8,6 +8,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  
 class CkeditorType extends AbstractType
 {
+	protected $locale;
+	
+	
+	public function setLocale($locale)
+  {
+    $this->locale = $locale;
+  }
   public function setDefaultOptions(OptionsResolverInterface $resolver)
   {
     $resolver->setDefaults(array(

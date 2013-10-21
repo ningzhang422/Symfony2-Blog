@@ -433,20 +433,6 @@ class Article
         return $this->slug;
     }
 	
-	/**
-	* @Assert\True()
-	*/
-	public function isArticleValid()
-	{
-	return false;
-	}
-	/**
-	* @Assert\True()
-	*/
-	public function isTitre()
-	{
-	return false;
-	}
 	
 	public function contenuValide(ExecutionContextInterface $context)
 	{

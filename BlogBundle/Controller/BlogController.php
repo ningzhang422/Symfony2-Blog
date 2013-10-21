@@ -19,6 +19,7 @@ use Sdz\BlogBundle\Form\ArticleEditType;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 
 
+
 class BlogController extends Controller
 {
   public function indexAction($page)
@@ -90,7 +91,6 @@ class BlogController extends Controller
 		  $form->bind($request);
 	 
 		  // On vérifie que les valeurs entrées sont correctes
-		  // (Nous verrons la validation des objets en détail dans le prochain chapitre)
 		  if ($form->isValid()) {
 			// Ici : On traite manuellement le fichier uploadé
   			// $article->getImage()->upload();  
@@ -106,13 +106,15 @@ class BlogController extends Controller
 			
 			// On redirige vers la page de visualisation de l'article nouvellement créé
 			return $this->redirect($this->generateUrl('sdzblog_voir', array('id' => $article->getId())));
+		  }else{
+				  
 		  }
 		  
 		}
 	 
 	  // On passe la méthode createView() du formulaire à la vue afin qu'elle puisse afficher le formulaire toute seule
 	  return $this->render('SdzBlogBundle:Blog:ajouter.html.twig', array(
-		'form' => $form->createView(),
+		'form' => $form->createView()
 	  ));
   }
  
