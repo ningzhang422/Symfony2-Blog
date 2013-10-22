@@ -27,3 +27,8 @@ services:
         arguments: ["2013-10-29"]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    sdzblog.censure_listener:
+        class: Sdz\BlogBundle\Bigbrother\CensureListener
+        arguments: [[1, 2], @mailer]
+        tags:
+            - { name: kernel.event_listener, event: sdzblog.bigbrother.post_message, method: onMessagePost }

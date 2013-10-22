@@ -15,6 +15,8 @@ use Sdz\BlogBundle\Entity\ArticleCompetence;
 // N'oubliez pas d'ajouter le ArticleType
 use Sdz\BlogBundle\Form\ArticleType;
 use Sdz\BlogBundle\Form\ArticleEditType;
+use Sdz\BlogBundle\Bigbrother\BigbrotherEvents;
+use Sdz\BlogBundle\Bigbrother\MessagePostEvent;
 
 use JMS\SecurityExtraBundle\Annotation\Secure;
 
@@ -94,7 +96,16 @@ class BlogController extends Controller
 		  if ($form->isValid()) {
 			// Ici : On traite manuellement le fichier uploadé
   			// $article->getImage()->upload();  
-			  
+			// On crée l'évènement avec ses 2 arguments
+			//var_dump($this->getUser());
+			  $event = new MessagePostEvent($article->getContenu(), $this->getUser());
+		 
+			  // On déclenche l'évènement
+			  $this->get('event_dispatcher')
+				   ->dispatch(BigbrotherEvents::onMessagePost, $event);
+		 
+			  // On récupère ce qui a été modifié par le ou les listeners, ici le message
+			  $article->setContenu($event->getMessage());
 			// On l'enregistre notre objet $article dans la base de données
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($article);
@@ -106,8 +117,6 @@ class BlogController extends Controller
 			
 			// On redirige vers la page de visualisation de l'article nouvellement créé
 			return $this->redirect($this->generateUrl('sdzblog_voir', array('id' => $article->getId())));
-		  }else{
-				  
 		  }
 		  
 		}
