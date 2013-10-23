@@ -212,4 +212,11 @@ class BlogController extends Controller
       'liste_articles' => $liste // C'est ici tout l'intérêt : le contrôleur passe les variables nécessaires au template !
     ));
   }
+  
+  public function traductionAction($name)
+  {
+    return $this->render('SdzBlogBundle:Blog:traduction.html.twig', array(
+      'name' => $name
+    ));
+  }
 }
