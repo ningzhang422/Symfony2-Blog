@@ -1,0 +1,14 @@
+# src/Sdz/BlogBundle/Resources/translations/messages.zh.yml
+ 
+# On veut traduire « Hello » en « Bonjour »
+Hello: 你好
+Bye: 再见
+charte:
+    titre: 第三第三方
+    donnee:
+        # les éléments de liste sont précédés d'un tiret en YAML
+        - >
+            冬随风倒三方反对司法 防盗锁反对萨反对 反对萨发第三方 反对萨发 的萨反对萨地方 的萨发抖三方第三 
+        - |
+            的萨发大司法三大法  的萨发的萨发 的萨法三大法阿附别的选择
+        - 地方打三方才vcxz华人豪厄

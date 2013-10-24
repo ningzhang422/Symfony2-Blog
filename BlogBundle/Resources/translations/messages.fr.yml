@@ -1,0 +1,30 @@
+# src/Sdz/BlogBundle/Resources/translations/messages.fr.yml
+ 
+# On veut traduire « Hello » en « Bonjour »
+Hello: Bénjour
+Bye: Au revoir
+article:
+    edit:
+        title:         Édition d'un article
+        submit_button: Valider
+    show:
+        edit_button:   Éditer l'article
+        create_button: Créer un nouvel article
+
+charte:
+    titre: Mentions légales
+    donnee:
+        # les éléments de liste sont précédés d'un tiret en YAML
+        - >
+            Le Site du Zéro recueille des informations (login, e-mail) lors de
+            votre enregistrement en tant que membre du site. Lors de votre
+            connexion au site, un fichier "log" stocke les actions effectuées
+            par votre ordinateur (via son adresse IP) au serveur.
+        - |
+            Lorsque que vous vous connectez en tant que membre du Site du Zéro et
+            que vous cochez la case correspondante, un cookie est envoyé à votre
+            ordinateur afin qu'il se souvienne de votre login et de votre mot de
+            passe. Ceci vous est proposé uniquement afin d'automatiser la
+            procédure de connexion, et n'est en aucun cas utilisé par Simple IT à
+            d'autres fins.
+        - Merci de votre attention.

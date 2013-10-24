@@ -59,6 +59,6 @@ class BetaListener
     $event->setResponse($response);
 	
 	// On stoppe la propagation de l'évènement en cours (ici, kernel.response)
-    $event->stopPropagation();
+    //$event->stopPropagation();
   }
 }
