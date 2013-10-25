@@ -99,9 +99,21 @@ class ArticleRepository extends EntityRepository
     $query->setFirstResult(($page-1) * $nombreParPage)
     // Ainsi que le nombre d'articles à afficher
           ->setMaxResults($nombreParPage);
+		  
  
     // Enfin, on retourne l'objet Paginator correspondant à la requête construite
     // (n'oubliez pas le use correspondant en début de fichier)
     return new Paginator($query);
+  }
+  
+  public function getArticlesByDate($date)
+  {
+	   $query = $this->createQueryBuilder('a')
+	   				 ->Where('a.date >= :date_given')
+		  			 ->setParameter('date_given', $date)  // Date entre le 1er janvier de cette année
+		  			 ->getQuery()
+		  			 ->getResult();
+		return $query;
+	   
   }
 }

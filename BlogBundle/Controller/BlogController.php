@@ -19,7 +19,7 @@ use Sdz\BlogBundle\Bigbrother\BigbrotherEvents;
 use Sdz\BlogBundle\Bigbrother\MessagePostEvent;
 
 use JMS\SecurityExtraBundle\Annotation\Secure;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 class BlogController extends Controller
@@ -68,6 +68,29 @@ class BlogController extends Controller
     return $this->render('SdzBlogBundle:Blog:voir.html.twig', array(
       'article'                 => $article,
       'liste_articleCompetence' => $liste_articleCompetence,
+      // Pas besoin de passer les commentaires à la vue, on pourra y accéder via {{ article.commentaires }}
+      // 'liste_commentaires'   => $article->getCommentaires()
+    ));
+  }
+  /**
+   * @ParamConverter("date", options={"format": "d-m-Y"})
+   */
+  public function voirListeAction(\Datetime $date)
+  {
+    // À ce stade, la variable $article contient une instance de la classe Article
+    // Avec l'id correspondant à l'id contenu dans la route !
+ 
+    // On récupère ensuite les articleCompetence pour l'article $article
+    // On doit le faire à la main pour l'instant, car la relation est unidirectionnelle
+    // C'est-à-dire que $article->getArticleCompetences() n'existe pas !
+    $liste_articles = $this->getDoctrine()
+                                   ->getManager()
+                                   ->getRepository('SdzBlogBundle:Article')
+                                   ->getArticlesByDate($date);
+ 
+    // Puis modifiez la ligne du render comme ceci, pour prendre en compte les variables :
+    return $this->render('SdzBlogBundle:Blog:voirListe.html.twig', array(
+      'liste_articles_by_date'                 => $liste_articles,
       // Pas besoin de passer les commentaires à la vue, on pourra y accéder via {{ article.commentaires }}
       // 'liste_commentaires'   => $article->getCommentaires()
     ));

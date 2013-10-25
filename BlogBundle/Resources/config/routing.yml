@@ -5,7 +5,7 @@ sdzblog_accueil:
         page:  \d*
  
 sdzblog_voir:
-    pattern:   /article/{id}
+    pattern:   /article/{slug}
     defaults:  { _controller: SdzBlogBundle:Blog:voir }
  
 sdzblog_ajouter:
@@ -23,3 +23,6 @@ sdzblog_supprimer:
     defaults:  { _controller: SdzBlogBundle:Blog:supprimer }
     requirements:
         id:  \d+
+sdzblog_liste:
+    pattern:   /{date}
+    defaults:  { _controller: SdzBlogBundle:Blog:voirListe }

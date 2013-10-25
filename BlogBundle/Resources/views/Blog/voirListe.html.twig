@@ -1,0 +1,19 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/voir.html.twig #}
+ 
+{% extends "SdzBlogBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Lecture d'un article - {{ parent() }}
+{% endblock %}
+ 
+{% block sdzblog_body %}
+ 
+<ul>
+<ul class="nav nav-pills nav-stacked">
+  {% for article in liste_articles_by_date %}
+    <li><a href="{{ path('sdzblog_voir', {'slug': article.slug}) }}">{{ article.titre }}</a></li>
+  {% endfor %}
+</ul>
+</ul>
+ 
+{% endblock %}
