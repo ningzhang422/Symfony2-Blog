@@ -79,7 +79,7 @@ class BlogController extends Controller
   {
     // À ce stade, la variable $article contient une instance de la classe Article
     // Avec l'id correspondant à l'id contenu dans la route !
- 
+
     // On récupère ensuite les articleCompetence pour l'article $article
     // On doit le faire à la main pour l'instant, car la relation est unidirectionnelle
     // C'est-à-dire que $article->getArticleCompetences() n'existe pas !

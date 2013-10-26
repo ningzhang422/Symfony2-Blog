@@ -14,7 +14,7 @@
  
   {# Si on est sur la page d'accueil, on fait un lien vers l'article, sinon non #}
   {% if accueil %}
-    <a href="{{ path('sdzblog_voir', {'id': article.id} ) }}">{{ article.titre }}</a>
+    <a href="{{ path('sdzblog_voir', {'slug': article.slug} ) }}">{{ article.titre }}</a>
   {% else %}
     {{ article.titre }}
   {% endif %}
