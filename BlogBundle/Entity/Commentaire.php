@@ -29,6 +29,11 @@ class Commentaire
      */
     private $auteur;
 
+	/**
+     * @ORM\Column(name="ip", type="string", length=255)
+     */
+    private $ip;
+	
     /**
      * @var string
      *
@@ -51,6 +56,11 @@ class Commentaire
 	private $article;
 
 
+	/**
+     * @ORM\ManyToOne(targetEntity="Sdz\UserBundle\Entity\User")
+     */
+    private $user;
+
     /**
      * Get id
      *
@@ -60,7 +70,15 @@ class Commentaire
     {
         return $this->id;
     }
+	public function getIp()
+    {
+        return $this->ip;
+    }
 
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+    }
     /**
      * Set auteur
      *
@@ -154,12 +172,35 @@ class Commentaire
     }
 	
 	/**
+     * Set user
+     *
+     * @param \Sdz\UserBundle\Entity\User $user
+     * @return Commentaire
+     */
+    public function setUser(\Sdz\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Sdz\UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+	
+	/**
 	 * @ORM\PrePersist
 	 */
 	public function updateActicle_compteurCommentaire()
     {
-    	$nbCommentaires = $this->getArticle()->getNbCommentaires();
-		$this->getArticle()->setNbCommentaires($nbCommentaires+1);
+    	$nbCommentaires = $this->getArticle()->getCompteurCommentaire();
+		$this->getArticle()->setCompteurCommentaire($nbCommentaires+1);
     }
 	
 	/**
@@ -167,7 +208,7 @@ class Commentaire
    */
   public function decrease()
   {
-    $nbCommentaires = $this->getArticle()->getNbCommentaires();
-    $this->getArticle()->setNbCommentaires($nbCommentaires-1);
+    $nbCommentaires = $this->getArticle()->getCompteurCommentaire();
+    $this->getArticle()->setCompteurCommentaire($nbCommentaires-1);
   }
 }
