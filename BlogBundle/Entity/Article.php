@@ -43,6 +43,10 @@ class Article
    */
   	private $slug;
 	
+   /**
+   * @ORM\OneToMany(targetEntity="Sdz\BlogBundle\Entity\ArticleCompetence", mappedBy="article")
+   */
+  private $articleCompetences;
 	/**
    * @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie", cascade={"persist"})
    */
@@ -58,6 +62,7 @@ class Article
 		
     	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->articleCompetences = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 	
 	
@@ -82,7 +87,6 @@ class Article
      * @var string
      *
      * @ORM\Column(name="titre", type="string", length=255)
-	 * @Assert\MinLength(10)
      */
     private $titre;
 
@@ -90,7 +94,6 @@ class Article
      * @var string
      *
      * @ORM\Column(name="auteur", type="string", length=255)
-	 * @Assert\MinLength(2)
      */
     private $auteur;
 
@@ -446,4 +449,18 @@ class Article
 	  $context->addViolationAt('contenu', 'Contenu invalide car il contient un mot interdit.', array(), null);
 	}
 	}
+	public function addArticleCompetence(\Sdz\BlogBundle\Entity\ArticleCompetence $articleCompetence)
+	  {
+		$this->articleCompetences[] = $articleCompetence;
+	  }
+	
+	  public function removeArticleCompetence(\Sdz\BlogBundle\Entity\ArticleCompetence $articleCompetence)
+	  {
+		$this->articleCompetences->removeElement($articleCompetence);
+	  }
+	
+	  public function getArticleCompetences()
+	  {
+		return $this->articleCompetences;
+	  }
 }

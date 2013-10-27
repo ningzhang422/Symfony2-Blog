@@ -26,14 +26,28 @@
   {{ article.contenu }}
 </div>
  
-{# On affiche les catégories éventuelles #}
-{% if article.categories.count > 0 %}
-  <div class="well well-small">
-    <p><i>
-      Catégories :
-      {% for categorie in article.categories %}
-        {{ categorie.nom }}{% if not loop.last %}, {% endif %}
-      {% endfor %}
-    </i></p>
-  </div>
-{% endif %}
+<div class="well well-small">
+        <p><i>
+            {# On affiche les catÃ©gories Ã©ventuelles #}
+            {% if article.categories.count > 0 %}
+                CatÃ©gories :
+                {% for categorie in article.categories %}
+                    {{ categorie.nom }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {# On affiche les compÃ©tences Ã©ventuelles #}
+            {% if article.articleCompetences|length > 0 %}
+                - CompÃ©tences utilisÃ©es :
+                {% for articleCompetence in article.articleCompetences %}
+                    {{ articleCompetence.competence.nom }} : {{ articleCompetence.textNiveau }}{% if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            {% endif %}
+        </i></p>
+
+        <span class='st_facebook_hcount' st_url="{{ url('sdzblog_voir', {'slug': article.slug}) }}" displayText='Facebook'></span>
+        <span class='st_twitter_hcount' st_url="{{ url('sdzblog_voir', {'slug': article.slug}) }}" st_title="{{ article.titre }} - sur Tutoriel-Symfony2.fr" displayText='Tweet'></span>
+        <span class='st_plusone_hcount' st_url="{{ url('sdzblog_voir', {'slug': article.slug}) }}" displayText='Google +1'></span>
+        <span class='st_linkedin_hcount' st_url="{{ url('sdzblog_voir', {'slug': article.slug}) }}" displayText='LinkedIn'></span>
+    </div>
+</div>

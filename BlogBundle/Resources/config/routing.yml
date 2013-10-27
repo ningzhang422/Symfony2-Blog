@@ -26,3 +26,15 @@ sdzblog_supprimer:
 sdzblog_liste:
     pattern:   /{date}
     defaults:  { _controller: SdzBlogBundle:Blog:voirListe }
+sdzblog_ajouter_commentaire:
+    pattern:  /ajouter/{id}/commentaire
+    defaults: { _controller: SdzBlogBundle:Blog:ajouterCommentaire }
+    methods:  POST
+    requirements:
+        id:      \d+
+
+sdzblog_supprimer_commentaire:
+    pattern:   /supprimer/commentaire/{id}
+    defaults:  { _controller: SdzBlogBundle:Blog:supprimerCommentaire }
+    requirements:
+        id:  \d+

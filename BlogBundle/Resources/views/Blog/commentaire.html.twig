@@ -1,0 +1,20 @@
+{# On utilise une macro Twig pour afficher :
+   * Soit le nom de l'auteur anonyme de l'auteur
+   * Soit son nom et un lien vers son profil s'il était identifié #}
+{# import "SdzUserBundle::userHelpers.html.twig" as userHelpers #}
+
+<div id="comment{{ commentaire.id }}" itemscope itemtype="http://schema.org/Comment">
+  {% if is_granted('ROLE_ADMIN') %}
+    <div class="pull-right">
+      <a href="{{ path('sdzblog_supprimer_commentaire', {'id': commentaire.id}) }}" class="btn">
+        <i class="icon-trash"></i>
+      </a>
+    </div>
+  {% endif %}
+  <em>
+    Le <time datetime="{{ commentaire.date|date('c') }}" itemprop="datePublished">{{ commentaire.date|date('d/m/Y à H\\hi') }}</time>,
+    <span itemprop="author">{{ commentaire.auteur }}</span> a écrit :
+  </em>
+  <br />
+  {{ commentaire.contenu }}
+</div>

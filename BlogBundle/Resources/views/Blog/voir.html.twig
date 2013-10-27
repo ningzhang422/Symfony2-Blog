@@ -25,5 +25,20 @@
       Supprimer l'article
     </a>
   </p>
+  
+  <h3>Commentaires</h3>
+
+  {% for commentaire in commentaires %}
+    {% include "SdzBlogBundle:Blog:commentaire.html.twig" %}
+    <hr />
+  {% else %}
+    <p>Pas encore de commentaire.</p>
+  {% endfor %}
+
+  <h3>Poster un nouveau commentaire</h3>
+  <form method="post" action="{{ path('sdzblog_ajouter_commentaire', {'id': article.id}) }}">
+    {{ form_widget(form) }}
+    <input type="submit" value="Ajouter" class="btn btn-primary" />
+  </form>
  
 {% endblock %}
